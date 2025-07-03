@@ -65,6 +65,29 @@
         background: linear-gradient(45deg, #4caf50, #66bb6a) !important;
         color: white !important;
       }
+      .buttons button.button-roach {
+        background: url('Rhinoceroach.webp') no-repeat center center !important;
+        background-size: cover !important;
+
+        color: white !important;
+        font-weight: bold;
+        font-size: 1.3em;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(128, 0, 128, 0.5);
+        transition: all 0.3s ease;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+
+        /* Alternatively, fixed width and height: */
+        /* width: 400px; */
+        /* height: 120px; */
+      }
+
+      .buttons button.button-roach:hover {
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+        color: #fff !important;
+      }
+
       .button-disabled {
         background: #ccc !important;
         color: #888 !important;
@@ -88,14 +111,17 @@
         border-radius: 6px;
       }
       .roach-result {
-        font-weight: normal;
-        color: #333;
         margin-top: 15px;
         background: #ffffff;
         padding: 12px;
         border-radius: 8px;
         border: 1px solid #ddd;
         font-size: 1em;
+      }
+      .roach-result strong {
+        display: block;
+        color: #333;
+        font-weight: bold;
       }
       .roach-result .block-purple {
         background: #f3e5f5;
@@ -117,11 +143,6 @@
         padding: 8px;
         border-radius: 6px;
         margin-top: 6px;
-      }
-      .roach-result strong {
-        display: block;
-        color: #333;
-        font-weight: bold;
       }
       .highlight-evo {
         color: goldenrod;
@@ -175,11 +196,14 @@
           class="button-super"
           onclick="useSuperOnOther()"
         >
-          Use Super Evo on Other
+          Use Super on Other
         </button>
       </div>
       <div class="buttons">
-        <button onclick="playRoach()">เรียก Killer Rhinoceroach +3 Mana</button>
+        <button class="button-roach" onclick="playRoach()">
+          เรียก Roach ใช้ 3 มานา
+        </button>
+
         <button class="button-add-damage" onclick="addDamage()">
           Add Damage (+1)
         </button>
@@ -191,23 +215,10 @@
     <div class="side">
       <h2>Turn Summary</h2>
       <div class="output">
-        <p>
-          <span class="emoji">🃏</span> Total Combo Count:
-          <span id="cardCount">0</span>
-        </p>
-        <p>
-          <span class="emoji">⚔️</span> Total Attack: +<span id="attackBoost"
-            >0</span
-          >/+0
-        </p>
-        <p>
-          <span class="emoji">🔷</span> Mana Equation:
-          <span id="manaEquation">None</span>
-        </p>
-        <p>
-          <span class="emoji">💠</span> Total Mana Used:
-          <span id="totalMana">0</span>
-        </p>
+        <p>🃏 Total Combo Count: <span id="cardCount">0</span></p>
+        <p>⚔️ Total Attack: +<span id="attackBoost">0</span>/+0</p>
+        <p>🔷 Mana Equation: <span id="manaEquation">None</span></p>
+        <p>💠 Total Mana Used: <span id="totalMana">0</span></p>
         <p id="bonusDisplay">✨ Bonus: Evo=0, Super=0</p>
         <div class="roach-result" id="roachDamage"></div>
       </div>
@@ -231,12 +242,10 @@
         playedCards.push(cost);
         updateDisplay();
       }
-
       function addFreeCombo() {
         freeCombo += 1;
         updateDisplay();
       }
-
       function addEvo() {
         if (!evoAvailable || evoBonus > 0) return;
         evoBonus = 2;
@@ -244,7 +253,6 @@
         superAvailable = false;
         updateDisplay();
       }
-
       function addSuper() {
         if (!superAvailable || superBonus > 0) return;
         superBonus = 3;
@@ -252,7 +260,6 @@
         evoAvailable = false;
         updateDisplay();
       }
-
       function useEvoOnOther() {
         if (!evoAvailable) return;
         evoAvailable = false;
@@ -262,7 +269,6 @@
         evoUsed = true;
         updateDisplay();
       }
-
       function useSuperOnOther() {
         if (!superAvailable) return;
         superAvailable = false;
@@ -272,7 +278,6 @@
         superUsed = true;
         updateDisplay();
       }
-
       function playRoach() {
         const comboBefore = playedCards.length + freeCombo;
         playedCards.push(3);
@@ -294,16 +299,13 @@
         } else {
           damage = comboAfter;
         }
-
         roachDamages.push(damage);
         updateDisplay();
       }
-
       function addDamage() {
         extraRoachDamage += 1;
         updateDisplay();
       }
-
       function clearTurn() {
         playedCards = [];
         freeCombo = 0;
@@ -319,7 +321,6 @@
         superUsedIndex = null;
         updateDisplay();
       }
-
       function updateDisplay() {
         const cardCount = playedCards.length + freeCombo;
         const totalMana = playedCards.reduce((sum, val) => sum + val, 0);
@@ -338,54 +339,42 @@
         document.getElementById('manaEquation').innerHTML = equation;
         document.getElementById('totalMana').innerText = totalMana;
 
-        let evoText = evoBonus > 0 ? evoBonus : evoUsed ? '0 (used)' : '0';
-        let superText =
+        const evoText = evoBonus > 0 ? evoBonus : evoUsed ? '0 (used)' : '0';
+        const superText =
           superBonus > 0 ? superBonus : superUsed ? '0 (used)' : '0';
         document.getElementById(
           'bonusDisplay'
         ).innerHTML = `✨ Bonus: Evo=${evoText}, Super=${superText}`;
 
-        document.getElementById('evoBtn').disabled = !evoAvailable;
-        document.getElementById('superBtn').disabled = !superAvailable;
-        document.getElementById('evoOtherBtn').disabled = !evoAvailable;
-        document.getElementById('superOtherBtn').disabled = !superAvailable;
+        const evoBtn = document.getElementById('evoBtn');
+        const superBtn = document.getElementById('superBtn');
+        const evoOtherBtn = document.getElementById('evoOtherBtn');
+        const superOtherBtn = document.getElementById('superOtherBtn');
 
-        document
-          .getElementById('evoBtn')
-          .classList.toggle('button-disabled', !evoAvailable);
-        document
-          .getElementById('superBtn')
-          .classList.toggle('button-disabled', !superAvailable);
-        document
-          .getElementById('evoOtherBtn')
-          .classList.toggle('button-disabled', !evoAvailable);
-        document
-          .getElementById('superOtherBtn')
-          .classList.toggle('button-disabled', !superAvailable);
+        [evoBtn, superBtn, evoOtherBtn, superOtherBtn].forEach((btn) => {
+          const isEvo = btn.id.includes('evo');
+          btn.disabled = isEvo ? !evoAvailable : !superAvailable;
+          btn.classList.toggle('button-disabled', btn.disabled);
+        });
 
         const roachTotal = roachDamages.reduce((sum, d) => sum + d, 0);
         const total = roachTotal + extraRoachDamage;
 
-        let damageList = '';
-        if (roachDamages.length > 0) {
-          damageList = roachDamages
-            .map((dmg, index) => {
-              if (index === superUsedIndex) {
-                return `<span class="highlight-super">#${
-                  index + 1
-                }: +${dmg}/+0 (Super)</span>`;
-              } else if (index === evoUsedIndex) {
-                return `<span class="highlight-evo">#${
-                  index + 1
-                }: +${dmg}/+0 (Evo)</span>`;
-              } else {
+        const damageList = roachDamages.length
+          ? roachDamages
+              .map((dmg, index) => {
+                if (index === superUsedIndex)
+                  return `<span class="highlight-super">#${
+                    index + 1
+                  }: +${dmg}/+0 (Super)</span>`;
+                if (index === evoUsedIndex)
+                  return `<span class="highlight-evo">#${
+                    index + 1
+                  }: +${dmg}/+0 (Evo)</span>`;
                 return `#${index + 1}: +${dmg}/+0`;
-              }
-            })
-            .join('<br>');
-        } else {
-          damageList = 'No roaches played.';
-        }
+              })
+              .join('<br>')
+          : 'No roaches played.';
 
         document.getElementById('roachDamage').innerHTML = `
         🦏 <strong>Roach Damage:</strong><br>
